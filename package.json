@@ -1,0 +1,21 @@
+{
+  "name": "mf_runeterra_bot",
+  "version": "1.0.0",
+  "description": "Legends of Runeterra bot for discord",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "lor"
+  ],
+  "author": "BenJoe",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "runeterra": "^0.1.0"
+  }
+}
