@@ -3,10 +3,11 @@ const Discord = require('discord.js');
 
 //Borzasztó nagy barkácsolás, fix it later as usual
 const data = require('./../data/set1.json').concat(require('./../data/set2.json')).concat(require('./../data/set3.json'));
+//const globals = require('./../data/keywords.json');
 
 module.exports = {
 	name: 'deck',
-	description: 'Check deck code',
+	description: 'Display deck from deck code',
 	execute(message, args) {
         if (!args.length) {
 			return message.channel.send(`Please provide a deck code, ${message.author}!`);
@@ -23,17 +24,19 @@ module.exports = {
 			return message.channel.send(`Please provide a valid deck code, ${message.author}!`);
 		}
 
-		for (var i = 0; i < deck.length; i++) {
-			if (deck[i].code.includes("undefined")) {
-				deck[i].code = deck[i].code.replace("undefined", "MT");
+		for (const card of deck) {
+			if (card.code.includes("undefined")) {
+				card.code = card.code.replace("undefined", "MT");
 			}
 
-			let card = findCard(deck[i].code, deck[i].count);
-			formattedDeck.push(card);
+			let cardData = findCard(card.code, card.count);
+			formattedDeck.push(cardData);
 		}
 
 		formattedDeck.sort(sortByCost);
-		
+		let regionText = createRegionsText(formattedDeck.map(a => a = a.region));
+
+		embed.addField("Regions", regionText);
 		if(formattedDeck.filter(a => a.rarity == "Champion").length > 0){
 			embed.addField("Champions", createDeckText(formattedDeck.filter(a => a.rarity == "Champion")));
 		}
@@ -51,12 +54,19 @@ module.exports = {
 };
 
 function findCard(code, count){
-	for (var i = 0; i < data.length; i++) {
-        if (data[i].cardCode == code) {
-		   return {cost: data[i].cost, name: data[i].name, count: count, type: data[i].type, rarity: data[i].rarity};
+	for (const card of data) {
+        if (card.cardCode == code) {
+		   return {cost: card.cost, name: card.name, count: count, type: card.type, rarity: card.rarity, region: card.region};
        }
 	}
 	return null;
+}
+
+function createRegionsText(deck){
+	let regions = deck.filter(function(value, index, self) {
+		return self.indexOf(value) === index;
+	});
+	return regions.join(', ');
 }
 
 function sortByCost(a,b){
