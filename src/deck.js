@@ -34,20 +34,20 @@ module.exports = {
 		}
 
 		formattedDeck.sort(sortByCost);
-		let regionText = createRegionsText(formattedDeck.map(a => a = a.region));
+		let detailsText = createDetailsText(formattedDeck);
 
-		embed.addField("Regions", regionText);
+		embed.addField("Deck Details", detailsText);
 		if(formattedDeck.filter(a => a.rarity == "Champion").length > 0){
-			embed.addField("Champions", createDeckText(formattedDeck.filter(a => a.rarity == "Champion")));
+			embed.addField("Champions", createDeckText(formattedDeck.filter(a => a.rarity == "Champion")), true);
+		}
+		if(formattedDeck.filter(a => a.type == "Unit" && a.rarity != "Champion").length > 0){
+			embed.addField("Units", createDeckText(formattedDeck.filter(a => a.type == "Unit" && a.rarity != "Champion")), true);
+		}
+		if(formattedDeck.filter(a => a.type == "Spell").length > 0){
+			embed.addField("Spells", createDeckText(formattedDeck.filter(a => a.type == "Spell")), true);
 		}
 		if(formattedDeck.filter(a => a.type == "Landmark").length > 0){
 			embed.addField("Landmarks", createDeckText(formattedDeck.filter(a => a.type == "Landmark")));
-		}
-		if(formattedDeck.filter(a => a.type == "Unit" && a.rarity != "Champion").length > 0){
-			embed.addField("Units", createDeckText(formattedDeck.filter(a => a.type == "Unit" && a.rarity != "Champion")));
-		}
-		if(formattedDeck.filter(a => a.type == "Spell").length > 0){
-			embed.addField("Spells", createDeckText(formattedDeck.filter(a => a.type == "Spell")));
 		}
 		message.channel.send(embed);
 	},
@@ -62,8 +62,19 @@ function findCard(code, count){
 	return null;
 }
 
-function createRegionsText(deck){
-	let regions = deck.filter(function(value, index, self) {
+function createDetailsText(deck){
+	let details = [];
+	details.push("**Regions:** " + createRegionsText(deck.map(a => a = a.region)));
+	let deckcost = 0;
+	for(const card of deck){
+		deckcost += getCardCost(card.rarity.toLowerCase()) * card.count;
+	}
+	details.push("**Deck cost:** " + deckcost + " Shard");
+	return details.join('\n');
+}
+
+function createRegionsText(deckRegions){
+	let regions = deckRegions.filter(function(value, index, self) {
 		return self.indexOf(value) === index;
 	});
 	return regions.join(', ');
@@ -80,4 +91,13 @@ function createDeckText(deckArray){
 		toRet += elem.name + " (x" + elem.count + ")\n";
 	});
 	return toRet;
+}
+
+function getCardCost(rarity){
+    switch(rarity){
+        case "common": return 100;
+        case "rare": return 300;
+        case "epic": return 1200;
+        case "champion": return 3000;
+    }
 }
