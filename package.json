@@ -16,6 +16,6 @@
   "license": "ISC",
   "dependencies": {
     "discord.js": "^12.5.1",
-    "runeterra": "^0.1.0"
+    "runeterra": "^2.0.0"
   }
 }

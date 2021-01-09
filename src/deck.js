@@ -25,12 +25,12 @@ module.exports = {
 		}
 
 		for (const card of deck) {
-			if (card.code.includes("undefined")) {
+			/*if (card.code.includes("undefined")) {
 				card.code = card.code.replace("undefined", "MT");
 			}
 
-			let cardData = findCard(card.code, card.count);
-			formattedDeck.push(cardData);
+			let cardData = findCard(card.code, card.count);*/
+			formattedDeck.push(findCard(card.code, card.count));
 		}
 
 		formattedDeck.sort(sortByCost);
