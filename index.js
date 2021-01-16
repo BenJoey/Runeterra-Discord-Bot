@@ -21,7 +21,7 @@ client.on('message', message => {
 
 client.once('ready', () => {
 	client.commands.get('ready').execute(client);
-	setInterval(() => client.user.setActivity("!mf help"), 5000);
+	setInterval(() => client.user.setActivity(`${client.config.prefix} help`), 5000);
 });
 
 client.login(config.token);
