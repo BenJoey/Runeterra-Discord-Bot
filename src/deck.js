@@ -13,7 +13,6 @@ module.exports = {
 			return message.channel.send(`Please provide a deck code, ${message.author}!`);
 		}
 
-		let embed = new Discord.MessageEmbed();
 		let deck = null;
 		let formattedDeck = [];
 
@@ -24,18 +23,20 @@ module.exports = {
 			return message.channel.send(`Please provide a valid deck code, ${message.author}!`);
 		}
 
-		for (const card of deck) {
-			/*if (card.code.includes("undefined")) {
-				card.code = card.code.replace("undefined", "MT");
-			}
+		for (const decodedCard of deck) {
+			/*if (decodedCard.code.includes("undefined")) {
+				decodedCard.code = decodedCard.code.replace("undefined", "MT");
+			}*/
 
-			let cardData = findCard(card.code, card.count);*/
-			formattedDeck.push(findCard(card.code, card.count));
+			let card = data.find(elem => elem.cardCode == decodedCard.code);
+			if(card == undefined) return message.channel.send(`Please provide a valid deck code, ${message.author}!`);
+			formattedDeck.push({cost: card.cost, name: card.name, count: decodedCard.count, type: card.type, rarity: card.rarity, region: card.region});
 		}
 
 		formattedDeck.sort(sortByCost);
 		let detailsText = createDetailsText(formattedDeck);
 
+		let embed = new Discord.MessageEmbed();
 		embed.addField("Deck Details", detailsText);
 		if(formattedDeck.filter(a => a.rarity == "Champion").length > 0){
 			embed.addField("Champions", createDeckText(formattedDeck.filter(a => a.rarity == "Champion")), true);
@@ -52,15 +53,6 @@ module.exports = {
 		message.channel.send(embed);
 	},
 };
-
-function findCard(code, count){
-	for (const card of data) {
-        if (card.cardCode == code) {
-		   return {cost: card.cost, name: card.name, count: count, type: card.type, rarity: card.rarity, region: card.region};
-       }
-	}
-	return null;
-}
 
 function createDetailsText(deck){
 	let details = [];
