@@ -15,6 +15,7 @@ module.exports = {
 
 		let deck = null;
 		let formattedDeck = [];
+		let isSingleton = true;
 
 		try {
 			//TODO: Create own deck decoder
@@ -31,61 +32,63 @@ module.exports = {
 			let card = data.find(elem => elem.cardCode == decodedCard.code);
 			if(card == undefined) return message.channel.send(`Please provide a valid deck code, ${message.author}!`);
 			formattedDeck.push({cost: card.cost, name: card.name, count: decodedCard.count, type: card.type, rarity: card.rarity, region: card.region});
+			isSingleton = isSingleton && decodedCard.count == 1;
 		}
 
 		formattedDeck.sort(sortByCost);
-		let detailsText = createDetailsText(formattedDeck);
+		let detailsText = createDetailsText(formattedDeck, isSingleton);
 
 		let embed = new Discord.MessageEmbed();
 		embed.addField("Deck Details", detailsText);
-		if(formattedDeck.filter(a => a.rarity == "Champion").length > 0){
-			embed.addField("Champions", createDeckText(formattedDeck.filter(a => a.rarity == "Champion")), true);
+		if(formattedDeck.filter(a => a.rarity == "Champion").length > 0) {
+			embed.addField("Champions", createDeckText(formattedDeck.filter(a => a.rarity == "Champion"), isSingleton), true);
 		}
-		if(formattedDeck.filter(a => a.type == "Unit" && a.rarity != "Champion").length > 0){
-			embed.addField("Units", createDeckText(formattedDeck.filter(a => a.type == "Unit" && a.rarity != "Champion")), true);
+		if(formattedDeck.filter(a => a.type == "Unit" && a.rarity != "Champion").length > 0) {
+			embed.addField("Units", createDeckText(formattedDeck.filter(a => a.type == "Unit" && a.rarity != "Champion"), isSingleton), true);
 		}
-		if(formattedDeck.filter(a => a.type == "Spell").length > 0){
-			embed.addField("Spells", createDeckText(formattedDeck.filter(a => a.type == "Spell")), true);
+		if(formattedDeck.filter(a => a.type == "Spell").length > 0) {
+			embed.addField("Spells", createDeckText(formattedDeck.filter(a => a.type == "Spell"), isSingleton), true);
 		}
-		if(formattedDeck.filter(a => a.type == "Landmark").length > 0){
-			embed.addField("Landmarks", createDeckText(formattedDeck.filter(a => a.type == "Landmark")));
+		if(formattedDeck.filter(a => a.type == "Landmark").length > 0) {
+			embed.addField("Landmarks", createDeckText(formattedDeck.filter(a => a.type == "Landmark"), isSingleton));
 		}
 		message.channel.send(embed);
 	},
 };
 
-function createDetailsText(deck){
+function createDetailsText(deck, isSingleton) {
 	let details = [];
 	details.push("**Regions:** " + createRegionsText(deck.map(a => a = a.region)));
 	let deckcost = 0;
-	for(const card of deck){
+	for(const card of deck) {
 		deckcost += getCardCost(card.rarity.toLowerCase()) * card.count;
 	}
 	details.push("**Deck cost:** " + deckcost + " Shard");
+	details.push("**Deckbuilding rule:** " + (isSingleton ? "Singleton" : "Normal"));
 	return details.join('\n');
 }
 
-function createRegionsText(deckRegions){
+function createRegionsText(deckRegions) {
 	let regions = deckRegions.filter(function(value, index, self) {
 		return self.indexOf(value) === index;
 	});
 	return regions.join(', ');
 }
 
-function sortByCost(a,b){
+function sortByCost(a,b) {
 	var x = a.cost; var y = b.cost;
 	return ((x < y) ? -1 : ((x > y) ? 1 : 0));
 }
 
-function createDeckText(deckArray){
-	let toRet = "";
+function createDeckText(deckArray, isSingleton) {
+	let toRet = [];
 	deckArray.forEach(function(elem){
-		toRet += elem.name + " (x" + elem.count + ")\n";
+		toRet.push(elem.name + (isSingleton ? "" : " (x" + elem.count + ")"));
 	});
-	return toRet;
+	return toRet.join('\n');
 }
 
-function getCardCost(rarity){
+function getCardCost(rarity) {
     switch(rarity){
         case "common": return 100;
         case "rare": return 300;
