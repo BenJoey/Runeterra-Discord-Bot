@@ -1,9 +1,9 @@
 const Discord = require('discord.js');
 
 module.exports = {
-	name: 'help',
-	description: 'List the commands for this bot',
-	execute(message, args) {
+    name: 'help',
+    description: 'List the commands for this bot',
+    execute(message, args) {
         let embed = new Discord.MessageEmbed();
         embed.addField("Bot commands", `**${args.prefix} deck <deck-code>** - To view the deck list of the code\n`+
                                     `**${args.prefix} card <card-name>** - To view the specified card by name\n`+

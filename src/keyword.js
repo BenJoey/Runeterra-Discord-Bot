@@ -2,9 +2,9 @@ const Discord = require('discord.js');
 const keywordsdb = require('./../data/keywords.json');
 
 module.exports = {
-	name: 'keyword',
-	description: 'Get keyword description',
-	execute(message, args) {
+    name: 'keyword',
+    description: 'Get keyword description',
+    execute(message, args) {
     if (!args.length) {
         return message.channel.send(`Please provide a valid keyword, ${message.author}!`);
     }
