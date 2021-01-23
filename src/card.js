@@ -6,7 +6,8 @@ module.exports = {
     description: 'Find card image by name',
     execute(message, args) {
 
-        let cards = findCardByName(args.join(' ').toLowerCase());
+        let cardName = args.join(' ').toLowerCase();
+        let cards = data.filter(elem => elem.name.toLowerCase() == cardName);
         if(cards.length == 0) return message.channel.send("This card does not exist!");
 
         cards.forEach(function(card){
@@ -14,21 +15,11 @@ module.exports = {
             embed.setImage(card.assets[0].gameAbsolutePath);
             embed.setTitle(card.name);
             embed.setDescription(card.descriptionRaw);
-            embed.addField("Details", createCardString(card));
+            embed.addField("Card Details", createCardString(card));
             message.channel.send(embed);
         });
     }
 };
-
-function findCardByName(name){
-    let toRet = [];
-    for (const card of data) {
-        if (card.name.toLowerCase() == name) {
-           toRet.push(card);
-        }
-    }
-    return toRet;
-}
 
 function createCardString(card){
     let details = [];
