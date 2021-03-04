@@ -2,7 +2,7 @@ const { DeckEncoder } = require('runeterra');
 const Discord = require('discord.js');
 
 //Borzasztó nagy barkácsolás, fix it later as usual
-const data = require('./../data/set1.json').concat(require('./../data/set2.json')).concat(require('./../data/set3.json'));
+const data = require('./../data/set1-en_us.json').concat(require('./../data/set2-en_us.json')).concat(require('./../data/set3-en_us.json')).concat(require('./../data/set4-en_us.json'));
 //const globals = require('./../data/keywords.json');
 
 module.exports = {
@@ -28,6 +28,7 @@ module.exports = {
             /*if (decodedCard.code.includes("undefined")) {
                 decodedCard.code = decodedCard.code.replace("undefined", "MT");
             }*/
+            console.log(decodedCard);
 
             let card = data.find(elem => elem.cardCode == decodedCard.code);
             if(card == undefined) return message.channel.send(`Please provide a valid deck code, ${message.author}!`);

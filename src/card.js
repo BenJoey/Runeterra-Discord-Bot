@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const data = require('./../data/set1.json').concat(require('./../data/set2.json')).concat(require('./../data/set3.json'));
+const data = require('./../data/set1-en_us.json').concat(require('./../data/set2-en_us.json')).concat(require('./../data/set3-en_us.json')).concat(require('./../data/set4-en_us.json'));
 
 module.exports = {
     name: 'card',
